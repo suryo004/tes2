@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data dari Google Spreadsheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { margin-top: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+
+<h1>Data dari Google Spreadsheet</h1>
+<div id="content">Memuat data...</div>
+
+<script>
+    // Ganti URL_API dengan link Web App Apps Script kamu
+    const apiUrl = "https://script.google.com/macros/s/AKfycbyHSTuOXVyAkCuGUBOJCIQZbsZ5VZmt6GKkLnH1a3DZXgq6YmF70QkuE7dCKOZQEc3L/exec";
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            let content = document.getElementById('content');
+            content.innerHTML = "";
+
+            for (let sheetName in data) {
+                let tableHtml = `<h2>${sheetName}</h2><table>`;
+                let rows = data[sheetName];
+
+                if (rows.length > 0) {
+                    // Buat header tabel
+                    tableHtml += "<tr>";
+                    for (let key in rows[0]) {
+                        tableHtml += `<th>${key}</th>`;
+                    }
+                    tableHtml += "</tr>";
+
+                    // Buat baris data
+                    rows.forEach(row => {
+                        tableHtml += "<tr>";
+                        for (let key in row) {
+                            tableHtml += `<td>${row[key]}</td>`;
+                        }
+                        tableHtml += "</tr>";
+                    });
+                }
+                tableHtml += "</table>";
+                content.innerHTML += tableHtml;
+            }
+        })
+        .catch(error => {
+            document.getElementById('content').innerHTML = "Gagal memuat data: " + error;
+        });
+</script>
+
+</body>
+</html>
